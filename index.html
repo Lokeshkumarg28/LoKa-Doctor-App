@@ -5,124 +5,106 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>LoKa Doctor App</title>
 
-<!-- Fonts: Montserrat for general UI, Noto Sans for Indian scripts -->
+<!-- Fonts: Montserrat (UI) + Noto Sans (Indian scripts) -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --teal:#00bfae; --teal-dark:#009688; --ink:#004d40; --ink-2:#00796b;
-  --bg1:#e0f7fa; --bg2:#c3ffe7; --card:#fff; --shadow:0 6px 24px rgba(0,0,0,.08);
-  --muted:#5b7f79;
-}
-body{
-  margin:0; font-family:'Montserrat','Noto Sans', Arial, sans-serif; color:var(--ink);
-  background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);
-  min-height:100vh; display:flex; flex-direction:column; align-items:center;
-}
-body.loaded #doctor-img img { opacity:1; transform:scale(1);}
-#doctor-img img { opacity:0; transform:scale(.8); transition:opacity .7s,transform .8s cubic-bezier(.21,.8,.47,1);}
-header{
-  width:100%; color:#fff; text-align:center; letter-spacing:1.5px; padding:18px 10px; font-weight:700; font-size:22px;
-  background:linear-gradient(90deg,var(--teal) 0%, #00e676 100%);
-  border-radius:0 0 24px 24px; box-shadow:0 2px 16px rgba(0,0,0,.07);
-}
-main{width:100%; max-width:1080px; padding:18px;}
-.grid{display:grid; gap:18px}
-.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
-@media (max-width:920px){.g2,.g3{grid-template-columns:1fr}}
-.card{
-  background:var(--card); border-radius:20px; box-shadow:var(--shadow);
-  padding:22px 24px; display:none; opacity:0; transform:translateY(10px) scale(.98);
-  transition:all .35s cubic-bezier(.2,.9,.3,1); animation:fade-slide-in .7s cubic-bezier(.35,1,.3,1) both;
-}
-@keyframes fade-slide-in {
-  0% { opacity:0; transform:translateY(25px) scale(.98);}
-  100% { opacity:1; transform:none;}
-}
-.card.active{display:block; opacity:1; transform:none;}
-h2{margin:0 0 10px; color:var(--ink-2); letter-spacing:.5px}
-h3{margin:0 0 6px; color:var(--ink-2)}
-p.muted{color:var(--muted); margin:6px 0 14px}
-label{font-weight:600; display:block; margin:12px 0 6px}
-input, select, textarea{
-  width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid #b2dfdb;
-  background:#f8fafd; font-family:inherit; font-size:15px; outline:none;
-  box-shadow:0 1px 4px #00bfae11;
-}
-input:focus,select:focus,textarea:focus{border-color:var(--teal)}
-button{
-  border:none; border-radius:14px; padding:12px 18px; font-size:15px; font-weight:700;
-  background:linear-gradient(90deg,var(--teal) 0%, var(--teal-dark) 100%);
-  color:#fff; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.09);
-  transition:transform .12s ease;
-}
-button.secondary{background:#e8f5f3; color:var(--ink-2);}
-button.ghost{background:transparent; color:var(--ink-2);}
-button:disabled{background:#b2dfdb; cursor:not-allowed;}
-button:not(:disabled):hover { box-shadow:0 12px 28px #00968833; transform:translateY(-2px) scale(1.04);}
-button:active { transform:scale(0.98);}
-.row{display:flex; gap:10px; flex-wrap:wrap}
-.pill{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:20px; background:#f0fffb; border:1px solid #b2dfdb; font-size:13px}
-.lang-buttons{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px}
-.lang-button{
-  display:flex; align-items:center; gap:8px; border:2px solid var(--teal); background:#fff; border-radius:14px;
-  padding:12px; cursor:pointer; font-weight:700; justify-content:center; font-size:18px;
-  font-family:'Noto Sans','Montserrat',sans-serif; color:var(--ink-2);
-  transition:box-shadow .2s,border-color .3s;
-}
-.lang-button.selected {
-  box-shadow:0 6px 18px #00e67633; border-color:var(--ink-2); background:linear-gradient(90deg,#dff7f3,#e0f7fa);
-  animation:langPulse .6s;
-}
-@keyframes langPulse {
-  0% { box-shadow:0 0 0 #00bfae44; }
-  50% { box-shadow:0 0 24px #00bfae44; }
-  100%{ box-shadow:0 0 0 #00bfae44; }
-}
-.qr{width:120px; height:120px; border-radius:12px; border:2px solid var(--teal); display:flex; align-items:center; justify-content:center; background:#fff; overflow:hidden}
-.list{border:1px solid #dfe; border-radius:14px; overflow:hidden}
-.list .item{display:grid; grid-template-columns:1.2fr .8fr auto; gap:8px; padding:12px 14px; border-bottom:1px solid #eef}
-.list .item:last-child{border-bottom:none}
-.badge{font-size:12px; padding:6px 10px; border-radius:20px; background:#ecfbf8; border:1px solid #b2dfdb; color:var(--ink-2)}
-.video{height:220px; background:#c8e6c9; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:700; color:#2e7d32;}
-.status-ok{color:#1b5e20; font-weight:700}
-.status-warn{color:#e65100; font-weight:700}
-.status-bad{color:#b71c1c; font-weight:700}
-.kpi{display:flex; gap:10px; flex-wrap:wrap;}
-.kpi .tile{flex:1 1 160px; background:#f6fffd; border:1px solid #b2dfdb; border-radius:14px; padding:10px 12px}
-.small{font-size:12px; color:#567}
-.toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
-.table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; border:1px solid #cfe}
-.table th,.table td{padding:10px 12px; font-size:14px; border-bottom:1px solid #eef; text-align:left;}
-.table tr:last-child td{border-bottom:none;}
-.chips{display:flex; gap:8px; flex-wrap:wrap;}
-.toast{
-  position:fixed; right:16px; bottom:16px; background:#043; color:#fff; padding:12px 14px; border-radius:12px; box-shadow:var(--shadow);
-  transition:opacity .5s,transform .5s;
-  opacity:0; transform:translateY(30px); display:none;
-}
-.toast.show { opacity:1; transform:translateY(0);}
-footer{padding:12px 10px; color:#0a5; font-size:13px; text-align:center; opacity:.8}
-canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b2dfdb; border-radius:12px}
-/* responsive adjustments */
-@media (max-width:720px){
-  .lang-buttons{grid-template-columns:repeat(2,1fr)}
-  .lang-button{font-size:16px; padding:10px}
-  header{font-size:20px}
-}
+  :root{
+    --teal:#00bfae; --teal-dark:#009688; --ink:#004d40; --ink-2:#00796b;
+    --bg1:#e0f7fa; --bg2:#c3ffe7; --card:#fff; --shadow:0 6px 24px rgba(0,0,0,.08);
+    --muted:#5b7f79;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:'Montserrat', 'Noto Sans', Arial, sans-serif; color:var(--ink);
+    background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  }
+  header{
+    width:100%; color:#fff; text-align:center; letter-spacing:1.5px;
+    padding:18px 10px; font-weight:700; font-size:22px;
+    background:linear-gradient(90deg,var(--teal) 0%, #00e676 100%);
+    border-radius:0 0 24px 24px; box-shadow:0 2px 16px rgba(0,0,0,.07);
+  }
+  main{width:100%; max-width:1080px; padding:18px;}
+  .grid{display:grid; gap:18px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:920px){.g2,.g3{grid-template-columns:1fr}}
+  .card{
+    background:var(--card); border-radius:20px; box-shadow:var(--shadow);
+    padding:22px 24px; display:none; opacity:0; transform:translateY(10px) scale(.98);
+    transition:all .35s cubic-bezier(.2,.9,.3,1);
+  }
+  .card.active{display:block; opacity:1; transform:none}
+  h2{margin:0 0 10px; color:var(--ink-2); letter-spacing:.5px}
+  h3{margin:0 0 6px; color:var(--ink-2)}
+  p.muted{color:var(--muted); margin:6px 0 14px}
+  label{font-weight:600; display:block; margin:12px 0 6px}
+  input, select, textarea{
+    width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid #b2dfdb;
+    background:#f8fafd; font-family:inherit; font-size:15px; outline:none;
+    box-shadow:0 1px 4px #00bfae11;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--teal)}
+  button{
+    border:none; border-radius:14px; padding:12px 18px; font-size:15px; font-weight:700;
+    background:linear-gradient(90deg,var(--teal) 0%, var(--teal-dark) 100%);
+    color:#fff; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.09);
+    transition:transform .12s ease;
+  }
+  button.secondary{background:#e8f5f3; color:var(--ink-2)}
+  button.ghost{background:transparent; color:var(--ink-2)}
+  button:disabled{background:#b2dfdb; cursor:not-allowed}
+  button:hover:not(:disabled){transform:translateY(-1px) scale(1.02)}
+  .row{display:flex; gap:10px; flex-wrap:wrap}
+  .pill{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:20px; background:#f0fffb; border:1px solid #b2dfdb; font-size:13px}
+  /* language buttons grid */
+  .lang-buttons{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px}
+  .lang-button{
+    display:flex; align-items:center; gap:8px; border:2px solid var(--teal);
+    background:#fff; border-radius:14px; padding:12px; cursor:pointer; font-weight:700;
+    justify-content:center; font-size:18px;
+    /* let Noto handle script rendering */
+    font-family: 'Noto Sans', 'Montserrat', sans-serif;
+    color:var(--ink-2);
+  }
+  .lang-button.selected{
+    box-shadow:0 6px 18px #00e67633; border-color:var(--ink-2); background:linear-gradient(90deg,#dff7f3,#e0f7fa);
+  }
+  .qr{width:120px; height:120px; border-radius:12px; border:2px solid var(--teal); display:flex; align-items:center; justify-content:center; background:#fff; overflow:hidden}
+  .list{border:1px solid #dfe; border-radius:14px; overflow:hidden}
+  .list .item{display:grid; grid-template-columns:1.2fr .8fr auto; gap:8px; padding:12px 14px; border-bottom:1px solid #eef}
+  .list .item:last-child{border-bottom:none}
+  .badge{font-size:12px; padding:6px 10px; border-radius:20px; background:#ecfbf8; border:1px solid #b2dfdb; color:var(--ink-2)}
+  .video{height:220px; background:#c8e6c9; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:700; color:#2e7d32}
+  .status-ok{color:#1b5e20; font-weight:700}
+  .status-warn{color:#e65100; font-weight:700}
+  .status-bad{color:#b71c1c; font-weight:700}
+  .kpi{display:flex; gap:10px; flex-wrap:wrap}
+  .kpi .tile{flex:1 1 160px; background:#f6fffd; border:1px solid #b2dfdb; border-radius:14px; padding:10px 12px}
+  .small{font-size:12px; color:#567}
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; border:1px solid #cfe}
+  .table th,.table td{padding:10px 12px; font-size:14px; border-bottom:1px solid #eef; text-align:left}
+  .table tr:last-child td{border-bottom:none}
+  .chips{display:flex; gap:8px; flex-wrap:wrap}
+  .toast{position:fixed; right:16px; bottom:16px; background:#043; color:#fff; padding:12px 14px; border-radius:12px; box-shadow:var(--shadow); display:none}
+  footer{padding:12px 10px; color:#0a5; font-size:13px; text-align:center; opacity:.8}
+  canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b2dfdb; border-radius:12px}
+  /* responsive adjustments */
+  @media (max-width:720px){
+    .lang-buttons{grid-template-columns:repeat(2,1fr)}
+    .lang-button{font-size:16px; padding:10px}
+    header{font-size:20px}
+  }
 </style>
 </head>
 <body>
-<!-- Doctor Profile Image -->
-<div id="doctor-img" style="margin:32px 0 0 0; display:flex; justify-content:center;">
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=220&h=220&q=80"
-    alt="Doctor avatar"
-    style="width:110px; height:110px; border-radius:50%; box-shadow:0 4px 24px #00bfae33; object-fit:cover; border:3px solid #00bfae;">
-</div>
 <header>LoKa Doctor App</header>
 <main>
-  <!-- Welcome -->
+
+  <!-- 0. Welcome -->
   <section id="s-welcome" class="card active">
     <h2>Welcome, Doctor</h2>
     <p class="muted">Manage appointments, run teleconsultations, view reports & realtime vitals, and access emergency tools (blood donors, dialysis history) from one place.</p>
@@ -131,7 +113,8 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
       <button class="secondary" id="go-login">Skip to Login</button>
     </div>
   </section>
-  <!-- Language Selection -->
+
+  <!-- 1. Language Selection -->
   <section id="s-lang" class="card">
     <h2>Choose your language</h2>
     <div class="lang-buttons" id="langBtns"></div>
@@ -140,14 +123,15 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
       <button class="ghost" onclick="nav('s-welcome')">Back</button>
     </div>
   </section>
-  <!-- Login & Authentication -->
+
+  <!-- 2. Login & Authentication -->
   <section id="s-login" class="card">
     <h2>Login & Authentication</h2>
     <div class="grid g2">
       <div>
-        <label for="loginUser">Mobile / Email</label>
+        <label>Mobile / Email</label>
         <input id="loginUser" placeholder="doctor@hospital.com or 9xxxxxxxxx" />
-        <label for="loginPass">Password</label>
+        <label>Password</label>
         <input id="loginPass" type="password" placeholder="••••••••" />
         <div class="row">
           <button id="btn-login">Login</button>
@@ -162,13 +146,14 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
           <button class="secondary" id="btn-2fa-sms">SMS OTP</button>
         </div>
         <div style="margin-top:12px">
-          <label for="otpInput">Enter OTP (simulated)</label>
+          <label>Enter OTP (simulated)</label>
           <input id="otpInput" maxlength="6" placeholder="123456" />
         </div>
       </div>
     </div>
   </section>
-  <!-- Appointment Verification -->
+
+  <!-- 3. Appointment Verification -->
   <section id="s-appts" class="card">
     <h2>Appointments & Verification</h2>
     <div class="toolbar">
@@ -181,12 +166,14 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
     <div class="list" id="apptList"></div>
     <p class="hint">Tip: Click an appointment row to open the patient chart.</p>
   </section>
-  <!-- Patient Chart -->
+
+  <!-- 4. Patient Chart (Reports + Realtime + Tele) -->
   <section id="s-chart" class="card">
     <div class="row" style="justify-content:space-between; align-items:center">
       <h2 id="chartTitle">Patient Chart</h2>
       <div class="chips" id="patientChips"></div>
     </div>
+
     <div class="kpi">
       <div class="tile">
         <div class="small">Last Visit</div>
@@ -201,6 +188,7 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
         <div id="kpi-risk">Low</div>
       </div>
     </div>
+
     <div class="grid g2" style="margin-top:14px">
       <div>
         <h3>Real-time Vitals</h3>
@@ -232,6 +220,7 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
         <p class="hint">ABDM/FHIR Ready: Map to Patient, Encounter, Observation, MedicationRequest.</p>
       </div>
     </div>
+
     <div class="grid g2" style="margin-top:14px">
       <div>
         <h3>Teleconsultation</h3>
@@ -251,7 +240,7 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
           <button class="secondary" id="btn-careplan">Care Plan</button>
         </div>
         <div style="margin-top:10px">
-          <label for="rxText">Quick Prescription</label>
+          <label>Quick Prescription</label>
           <textarea id="rxText" rows="4" placeholder="e.g., Amlodipine 5mg OD x 30 days"></textarea>
           <div class="row">
             <button id="btn-save-rx">Save Rx</button>
@@ -260,11 +249,13 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
         </div>
       </div>
     </div>
+
     <div class="row" style="margin-top:10px">
       <button class="ghost" onclick="nav('s-appts')">Back to Appointments</button>
     </div>
   </section>
-  <!-- Emergency -->
+
+  <!-- 5. Emergency: Blood Donor + Dialysis History -->
   <section id="s-emergency" class="card">
     <h2>Emergency Tools</h2>
     <div class="grid g2">
@@ -273,8 +264,10 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
         <div class="row">
           <select id="donorGroup">
             <option value="">Blood Group</option>
-            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option>
+            <option>AB+</option><option>AB-</option>
           </select>
           <select id="donorCity">
             <option value="">City</option>
@@ -315,7 +308,8 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
       <button class="ghost" onclick="nav('s-appts')">Back</button>
     </div>
   </section>
-  <!-- Dashboard & Analytics -->
+
+  <!-- 6. Dashboard & Analytics -->
   <section id="s-dashboard" class="card">
     <h2>My Dashboard</h2>
     <div class="kpi">
@@ -329,308 +323,303 @@ canvas#lineChart{width:100%; height:160px; background:#fff; border:1px dashed #b
       <button class="secondary" onclick="nav('s-emergency')">Emergency Tools</button>
     </div>
   </section>
+
 </main>
 <footer>© 2025 LoKa Doctor App • Front-end demo (no backend). Replace simulated modules with real services.</footer>
 <div class="toast" id="toast"></div>
 
-
 <script>
-// ------------------------------
-// App State (mock data)
-// ------------------------------
-const state = {
-  lang: 'English',
-  loggedIn: false,
-  doctor: { id:'DOC101', name:'Dr. Patel', dept:'General Medicine' },
-  appointments: [
-    { id:'APT-001', when:'2025-08-22 09:00', mode:'Tele', patient:{ id:'PAT348920', name:'S. Kumar', age:58, sex:'M', abha:'12-3456-7890-12', city:'Chennai' }, flags:['HTN','DM'] },
-    { id:'APT-002', when:'2025-08-22 10:30', mode:'In-Person', patient:{ id:'PAT551210', name:'Latha Devi', age:66, sex:'F', abha:'22-1111-2222-33', city:'Bengaluru' }, flags:['CKD','Dialysis'] },
-    { id:'APT-003', when:'2025-08-22 11:15', mode:'Tele', patient:{ id:'PAT222111', name:'Rahul Roy', age:41, sex:'M', abha:'98-7654-3210-11', city:'Mumbai' }, flags:['Obesity'] },
-    { id:'APT-004', when:'2025-08-22 12:00', mode:'In-Person', patient:{ id:'PAT999333', name:'Meera', age:29, sex:'F', abha:'55-3333-4444-66', city:'Chennai' }, flags:['PCOS'] },
-  ],
-  reports: [
-    { date:'2025-07-15', type:'ECG', url:'#' },
-    { date:'2025-07-29', type:'CBC', url:'#' },
-    { date:'2025-08-01', type:'Prescription', url:'#' },
-  ],
-  donors: [
-    { name:'Arun', group:'O+', city:'Chennai', phone:'98xxxxxx01' },
-    { name:'Beena', group:'A-', city:'Bengaluru', phone:'99xxxxxx22' },
-    { name:'Chirag', group:'B+', city:'Delhi', phone:'97xxxxxx33' },
-    { name:'Divya', group:'AB+', city:'Mumbai', phone:'96xxxxxx44' },
-    { name:'Imran', group:'O-', city:'Hyderabad', phone:'95xxxxxx55' },
-    { name:'Kavya', group:'A+', city:'Coimbatore', phone:'94xxxxxx66' },
-  ],
-  streaming:false,
-  streamTimer:null,
-  streamSeries:[],
-  currentPatient:null
-};
-
-// ------------------------------
-// Utilities
-// ------------------------------
-const $ = sel => document.querySelector(sel);
-const $$ = sel => document.querySelectorAll(sel);
-function nav(id){
-  $$('.card').forEach(c=>{c.classList.remove('active')});
-  $('#'+id).classList.add('active');
-}
-function toast(msg){
-  const t = $('#toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  t.style.display='block';
-  setTimeout(()=>{ t.classList.remove('show'); t.style.display='none'; }, 1800);
-}
-
-// ------------------------------
-// Language Selection (8 languages)
-// ------------------------------
-const languages = [
-  { code:'en', label:'English' },
-  { code:'hi', label:'हिन्दी' },
-  { code:'ta', label:'தமிழ்' },
-  { code:'bn', label:'বাংলা' },
-  { code:'mr', label:'मराठी' },
-  { code:'te', label:'తెలుగు' },
-  { code:'kn', label:'ಕನ್ನಡ' },
-  { code:'ml', label:'മലയാളം' },
-];
-const langBtns = $('#langBtns');
-languages.forEach(l=>{
-  const btn = document.createElement('button');
-  btn.className='lang-button';
-  btn.textContent = l.label;
-  btn.onclick = ()=>{
-    $$('.lang-button').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    state.lang = l.label;
-    $('#btn-lang-continue').disabled = false;
+  // ------------------------------
+  // App State (mock data)
+  // ------------------------------
+  const state = {
+    lang: 'English',
+    loggedIn: false,
+    doctor: { id:'DOC101', name:'Dr. Patel', dept:'General Medicine' },
+    appointments: [
+      { id:'APT-001', when:'2025-08-22 09:00', mode:'Tele', patient:{ id:'PAT348920', name:'S. Kumar', age:58, sex:'M', abha:'12-3456-7890-12', city:'Chennai' }, flags:['HTN','DM'] },
+      { id:'APT-002', when:'2025-08-22 10:30', mode:'In-Person', patient:{ id:'PAT551210', name:'Latha Devi', age:66, sex:'F', abha:'22-1111-2222-33', city:'Bengaluru' }, flags:['CKD','Dialysis'] },
+      { id:'APT-003', when:'2025-08-22 11:15', mode:'Tele', patient:{ id:'PAT222111', name:'Rahul Roy', age:41, sex:'M', abha:'98-7654-3210-11', city:'Mumbai' }, flags:['Obesity'] },
+      { id:'APT-004', when:'2025-08-22 12:00', mode:'In-Person', patient:{ id:'PAT999333', name:'Meera', age:29, sex:'F', abha:'55-3333-4444-66', city:'Chennai' }, flags:['PCOS'] },
+    ],
+    reports: [
+      { date:'2025-07-15', type:'ECG', url:'#' },
+      { date:'2025-07-29', type:'CBC', url:'#' },
+      { date:'2025-08-01', type:'Prescription', url:'#' },
+    ],
+    donors: [
+      { name:'Arun', group:'O+', city:'Chennai', phone:'98xxxxxx01' },
+      { name:'Beena', group:'A-', city:'Bengaluru', phone:'99xxxxxx22' },
+      { name:'Chirag', group:'B+', city:'Delhi', phone:'97xxxxxx33' },
+      { name:'Divya', group:'AB+', city:'Mumbai', phone:'96xxxxxx44' },
+      { name:'Imran', group:'O-', city:'Hyderabad', phone:'95xxxxxx55' },
+      { name:'Kavya', group:'A+', city:'Coimbatore', phone:'94xxxxxx66' },
+    ],
+    streaming:false,
+    streamTimer:null,
+    streamSeries:[],
+    currentPatient:null
   };
-  langBtns.appendChild(btn);
-});
-$('#go-lang').onclick=()=>nav('s-lang');
-$('#go-login').onclick=()=>nav('s-login');
-$('#btn-lang-continue').onclick=()=>{ toast(`Language set: ${state.lang}`); nav('s-login'); };
 
-// ------------------------------
-// Login
-// ------------------------------
-$('#btn-login').onclick=()=>{
-  const u=$('#loginUser').value.trim(); const p=$('#loginPass').value.trim();
-  if(!u || !p){ toast('Enter credentials'); return; }
-  state.loggedIn=true;
-  toast('Login successful');
-  populateAppointments();
-  updateDashboard();
-  nav('s-dashboard');
-};
-$('#btn-otp').onclick=()=>{ toast('OTP sent (demo: 123456)'); };
-$('#btn-2fa-app').onclick=()=>toast('Use your authenticator (demo)');
-$('#btn-2fa-sms').onclick=()=>toast('SMS code sent (demo)');
-$('#otpInput').addEventListener('input', e=>{ if(e.target.value==='123456'){ toast('2FA verified'); } });
-
-// ------------------------------
-// Dashboard
-// ------------------------------
-function updateDashboard(){
-  $('#dash-appts').textContent = state.appointments.length;
-  $('#dash-tele').textContent = state.appointments.filter(a=>a.mode==='Tele').length;
-  $('#dash-risk').textContent = state.appointments.filter(a=>a.flags.includes('CKD') || a.flags.includes('HTN')).length;
-  $('#dash-labs').textContent = 3;
-}
-
-// ------------------------------
-// Appointments & Verification
-// ------------------------------
-function populateAppointments(list=state.appointments){
-  const el = $('#apptList'); el.innerHTML='';
-  list.forEach(a=>{
-    const row=document.createElement('div'); row.className='item';
-    row.innerHTML = `
-      <div>
-        <b>${a.patient.name}</b> <span class="small">(${a.patient.id})</span><br/>
-        <span class="small">${a.patient.age}/${a.patient.sex} • ${a.patient.city} • ABHA ${a.patient.abha}</span><br/>
-        <span class="small">${a.flags.map(f=>`<span class="badge">${f}</span>`).join(' ')}</span>
-      </div>
-      <div><b>${a.when}</b><br/><span class="badge">${a.mode}</span></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="secondary" data-open="${a.id}">Open</button>
-        <div class="qr"><img alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(a.patient.id+'|'+a.id)}" /></div>
-      </div>
-    `;
-    el.appendChild(row);
-  });
-  // wire open buttons
-  $$('#apptList [data-open]').forEach(b=>{
-    b.onclick=()=>{
-      const appt = state.appointments.find(x=>x.id===b.getAttribute('data-open'));
-      openChart(appt);
-    };
-  });
-}
-$('#searchAppt').addEventListener('input', e=>{
-  const q=e.target.value.toLowerCase();
-  const filtered = state.appointments.filter(a=>
-    a.patient.id.toLowerCase().includes(q) ||
-    a.patient.name.toLowerCase().includes(q) ||
-    (a.patient.abha||'').toLowerCase().includes(q)
-  );
-  populateAppointments(filtered);
-});
-$('#btn-scan-qr').onclick=()=>{ toast('QR scan simulated'); nav('s-appts'); };
-$('#btn-fingerprint').onclick=()=>toast('Fingerprint verified (sim)');
-$('#btn-face').onclick=()=>toast('Face recognized (sim)');
-
-// ------------------------------
-// Patient Chart
-// ------------------------------
-function openChart(appt){
-  state.currentPatient = appt.patient;
-  $('#chartTitle').textContent = `${appt.patient.name} · ${appt.patient.id}`;
-  $('#patientChips').innerHTML = `
-    <span class="pill">Age: ${appt.patient.age}</span>
-    <span class="pill">Sex: ${appt.patient.sex}</span>
-    <span class="pill">ABHA: ${appt.patient.abha}</span>
-    <span class="pill">City: ${appt.patient.city}</span>
-  `;
-  $('#kpi-last').textContent = appt.when;
-  $('#kpi-flags').textContent = appt.flags.join(', ') || 'None';
-  $('#kpi-risk').textContent = appt.flags.includes('CKD') ? 'High' : (appt.flags.includes('HTN') ? 'Medium' : 'Low');
-  populateReports();
-  resetVitals();
-  nav('s-chart');
-}
-function populateReports(){
-  const tb = $('#tblReports tbody'); tb.innerHTML='';
-  state.reports.forEach(r=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.date}</td><td>${r.type}</td><td><button class="secondary">View</button></td>`;
-    tb.appendChild(tr);
-  });
-}
-
-// Realtime vitals (simulated)
-const chart = {
-  draw(){
-    const c = $('#lineChart');
-    const dpr = window.devicePixelRatio || 1;
-    c.width = c.clientWidth * dpr; c.height = c.clientHeight * dpr;
-    const ctx = c.getContext('2d'); ctx.scale(dpr,dpr);
-    ctx.clearRect(0,0,c.clientWidth,c.clientHeight);
-    // axes
-    ctx.strokeStyle = '#b2dfdb'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(10,10); ctx.lineTo(10,c.clientHeight-10); ctx.lineTo(c.clientWidth-10,c.clientHeight-10); ctx.stroke();
-    // line
-    ctx.strokeStyle = '#00897b'; ctx.lineWidth=2;
-    ctx.beginPath();
-    const series = state.streamSeries;
-    const step = (c.clientWidth-20)/Math.max(1,series.length-1);
-    series.forEach((v,i)=>{
-      const x = 10 + i*step;
-      const y = 10 + (1 - (v-50)/70) * (c.clientHeight-20); // map 50..120 to canvas
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    });
-    ctx.stroke();
+  // ------------------------------
+  // Utilities
+  // ------------------------------
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => document.querySelectorAll(sel);
+  function nav(id){
+    $$('.card').forEach(c=>{c.classList.remove('active')});
+    $('#'+id).classList.add('active');
   }
-};
-function resetVitals(){
-  $('#v-hr').textContent='—';
-  $('#v-spo2').textContent='—';
-  $('#v-temp').textContent='—';
-  $('#v-bp').textContent='—';
-  $('#v-rr').textContent='—';
-  state.streamSeries = [];
-  chart.draw();
-}
-function pushStream(){
-  const hr = 66 + Math.round(Math.random()*14);
-  const spo2 = 96 + Math.round(Math.random()*3);
-  const temp = (36.4 + Math.random()*0.6).toFixed(1);
-  const sys = 110 + Math.round(Math.random()*20);
-  const dia = 70 + Math.round(Math.random()*12);
-  const rr = 12 + Math.round(Math.random()*6);
+  function toast(msg){
+    const t = $('#toast'); t.textContent = msg; t.style.display='block';
+    setTimeout(()=>t.style.display='none', 1800);
+  }
 
-  $('#v-hr').textContent=hr;
-  $('#v-spo2').textContent=spo2;
-  $('#v-temp').textContent=temp;
-  $('#v-bp').textContent=`${sys}/${dia}`;
-  $('#v-rr').textContent=rr;
-
-  state.streamSeries.push(hr);
-  if(state.streamSeries.length>50) state.streamSeries.shift();
-  chart.draw();
-}
-$('#btn-start-stream').onclick=()=>{
-  if(state.streaming) return;
-  state.streaming=true;
-  state.streamTimer=setInterval(pushStream, 800);
-  toast('Streaming started');
-};
-$('#btn-stop-stream').onclick=()=>{ state.streaming=false; clearInterval(state.streamTimer); toast('Streaming stopped'); };
-
-// Teleconsult
-$('#btn-tele-start').onclick=()=>{ $('#vidBox').textContent='Live (simulated)'; toast('Teleconsult started'); };
-$('#btn-tele-end').onclick=()=>{ $('#vidBox').textContent='Disconnected'; toast('Teleconsult ended'); };
-$('#btn-share-screen').onclick=()=>toast('Screen shared (sim)');
-
-// Clinical actions & Rx
-$('#btn-order-labs').onclick=()=>toast('Lab order created (sim)');
-$('#btn-order-imaging').onclick=()=>toast('Imaging order created (sim)');
-$('#btn-careplan').onclick=()=>toast('Care plan saved (sim)');
-$('#btn-add-note').onclick=()=>toast('Note added (sim)');
-$('#btn-upload').onclick=()=>toast('Upload dialog (sim)');
-$('#btn-generate-rx').onclick=()=>toast('Blank e-Rx generated (sim)');
-$('#btn-save-rx').onclick=()=>toast('e-Rx saved (sim)');
-$('#btn-send-app').onclick=()=>toast('Sent to patient app (sim)');
-
-// ------------------------------
-// Emergency: Blood Donor & Dialysis
-// ------------------------------
-function renderDonors(rows){
-  const tb = $('#tblDonors tbody'); tb.innerHTML='';
-  rows.forEach(d=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${d.name}</td><td>${d.group}</td><td>${d.city}</td><td>${d.phone}</td><td><button class="secondary">Call</button></td>`;
-    tb.appendChild(tr);
+  // ------------------------------
+  // Language Selection (8 languages)
+  // ------------------------------
+  const languages = [
+    { code:'en', label:'English' },
+    { code:'hi', label:'हिन्दी' },
+    { code:'ta', label:'தமிழ்' },
+    { code:'bn', label:'বাংলা' },
+    { code:'mr', label:'मराठी' },
+    { code:'te', label:'తెలుగు' },
+    { code:'kn', label:'ಕನ್ನಡ' },
+    { code:'ml', label:'മലയാളം' },
+  ];
+  const langBtns = $('#langBtns');
+  languages.forEach(l=>{
+    const btn = document.createElement('button');
+    btn.className='lang-button';
+    btn.textContent = l.label;
+    btn.onclick = ()=>{
+      $$('.lang-button').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.lang = l.label;
+      $('#btn-lang-continue').disabled = false;
+    };
+    langBtns.appendChild(btn);
   });
-}
-renderDonors(state.donors);
-$('#btn-find-donor').onclick=()=>{
-  const g = $('#donorGroup').value; const c=$('#donorCity').value;
-  const rows = state.donors.filter(d=>(!g||d.group===g)&&(!c||d.city===c));
-  renderDonors(rows);
-  toast(`${rows.length} donors found`);
-};
-$('#btn-broadcast').onclick=()=>toast('Emergency alert broadcasted to nearby donors (sim)');
+  $('#go-lang').onclick=()=>nav('s-lang');
+  $('#go-login').onclick=()=>nav('s-login');
+  $('#btn-lang-continue').onclick=()=>{ toast(`Language set: ${state.lang}`); nav('s-login'); };
 
-$('#btn-d-fingerprint').onclick=()=>{ toast('Fingerprint matched (sim)'); fillDialysisDemo('PAT551210'); };
-$('#btn-d-face').onclick=()=>{ toast('Face recognized (sim)'); fillDialysisDemo('PAT551210'); };
-$('#btn-d-fetch').onclick=()=>{
-  const pid = $('#d-abha').value.trim();
-  if(!pid){ toast('Enter ABHA / Patient ID'); return; }
-  fillDialysisDemo(pid);
-};
-function fillDialysisDemo(pid){
-  $('#d-last').textContent = '2025-08-10 · 4h session, UF 2.1L';
-  $('#d-comp').textContent = 'Intradialytic hypotension (once in last 3 sessions)';
-  $('#d-labs').textContent = 'Hb 10.8, K+ 4.8, Ca 9.1, PO4 5.2';
-  toast(`Dialysis history fetched for ${pid} (sim)`);
-}
+  // ------------------------------
+  // Login
+  // ------------------------------
+  $('#btn-login').onclick=()=>{
+    const u=$('#loginUser').value.trim(); const p=$('#loginPass').value.trim();
+    if(!u || !p){ toast('Enter credentials'); return; }
+    state.loggedIn=true;
+    toast('Login successful');
+    populateAppointments();
+    updateDashboard();
+    nav('s-dashboard');
+  };
+  $('#btn-otp').onclick=()=>{ toast('OTP sent (demo: 123456)'); };
+  $('#btn-2fa-app').onclick=()=>toast('Use your authenticator (demo)');
+  $('#btn-2fa-sms').onclick=()=>toast('SMS code sent (demo)');
+  $('#otpInput').addEventListener('input', e=>{ if(e.target.value==='123456'){ toast('2FA verified'); } });
 
-// ------------------------------
-// Shortcuts & Init
-// ------------------------------
-document.addEventListener('keydown', e=>{
-  if(e.key==='F2') nav('s-appts');
-  if(e.key==='F3') nav('s-emergency');
-  if(e.key==='F4') nav('s-dashboard');
-});
-window.addEventListener('load', ()=>{
-  chart.draw();
-  document.body.classList.add('loaded');
-});
+  // ------------------------------
+  // Dashboard
+  // ------------------------------
+  function updateDashboard(){
+    $('#dash-appts').textContent = state.appointments.length;
+    $('#dash-tele').textContent = state.appointments.filter(a=>a.mode==='Tele').length;
+    $('#dash-risk').textContent = state.appointments.filter(a=>a.flags.includes('CKD') || a.flags.includes('HTN')).length;
+    $('#dash-labs').textContent = 3;
+  }
+
+  // ------------------------------
+  // Appointments & Verification
+  // ------------------------------
+  function populateAppointments(list=state.appointments){
+    const el = $('#apptList'); el.innerHTML='';
+    list.forEach(a=>{
+      const row=document.createElement('div'); row.className='item';
+      row.innerHTML = `
+        <div>
+          <b>${a.patient.name}</b> <span class="small">(${a.patient.id})</span><br/>
+          <span class="small">${a.patient.age}/${a.patient.sex} • ${a.patient.city} • ABHA ${a.patient.abha}</span><br/>
+          <span class="small">${a.flags.map(f=>`<span class="badge">${f}</span>`).join(' ')}</span>
+        </div>
+        <div><b>${a.when}</b><br/><span class="badge">${a.mode}</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="secondary" data-open="${a.id}">Open</button>
+          <div class="qr"><img alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(a.patient.id+'|'+a.id)}" /></div>
+        </div>
+      `;
+      el.appendChild(row);
+    });
+    // wire open buttons
+    $$('#apptList [data-open]').forEach(b=>{
+      b.onclick=()=>{
+        const appt = state.appointments.find(x=>x.id===b.getAttribute('data-open'));
+        openChart(appt);
+      };
+    });
+  }
+  $('#searchAppt').addEventListener('input', e=>{
+    const q=e.target.value.toLowerCase();
+    const filtered = state.appointments.filter(a=>
+      a.patient.id.toLowerCase().includes(q) ||
+      a.patient.name.toLowerCase().includes(q) ||
+      (a.patient.abha||'').toLowerCase().includes(q)
+    );
+    populateAppointments(filtered);
+  });
+  $('#btn-scan-qr').onclick=()=>{ toast('QR scan simulated'); nav('s-appts'); };
+  $('#btn-fingerprint').onclick=()=>toast('Fingerprint verified (sim)');
+  $('#btn-face').onclick=()=>toast('Face recognized (sim)');
+
+  // ------------------------------
+  // Patient Chart
+  // ------------------------------
+  function openChart(appt){
+    state.currentPatient = appt.patient;
+    $('#chartTitle').textContent = `${appt.patient.name} · ${appt.patient.id}`;
+    $('#patientChips').innerHTML = `
+      <span class="pill">Age: ${appt.patient.age}</span>
+      <span class="pill">Sex: ${appt.patient.sex}</span>
+      <span class="pill">ABHA: ${appt.patient.abha}</span>
+      <span class="pill">City: ${appt.patient.city}</span>
+    `;
+    $('#kpi-last').textContent = appt.when;
+    $('#kpi-flags').textContent = appt.flags.join(', ') || 'None';
+    $('#kpi-risk').textContent = appt.flags.includes('CKD') ? 'High' : (appt.flags.includes('HTN') ? 'Medium' : 'Low');
+    populateReports();
+    resetVitals();
+    nav('s-chart');
+  }
+  function populateReports(){
+    const tb = $('#tblReports tbody'); tb.innerHTML='';
+    state.reports.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${r.date}</td><td>${r.type}</td><td><button class="secondary">View</button></td>`;
+      tb.appendChild(tr);
+    });
+  }
+
+  // Realtime vitals (simulated)
+  const chart = {
+    draw(){
+      const c = $('#lineChart');
+      const dpr = window.devicePixelRatio || 1;
+      c.width = c.clientWidth * dpr; c.height = c.clientHeight * dpr;
+      const ctx = c.getContext('2d'); ctx.scale(dpr,dpr);
+      ctx.clearRect(0,0,c.clientWidth,c.clientHeight);
+      // axes
+      ctx.strokeStyle = '#b2dfdb'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(10,10); ctx.lineTo(10,c.clientHeight-10); ctx.lineTo(c.clientWidth-10,c.clientHeight-10); ctx.stroke();
+      // line
+      ctx.strokeStyle = '#00897b'; ctx.lineWidth=2;
+      ctx.beginPath();
+      const series = state.streamSeries;
+      const step = (c.clientWidth-20)/Math.max(1,series.length-1);
+      series.forEach((v,i)=>{
+        const x = 10 + i*step;
+        const y = 10 + (1 - (v-50)/70) * (c.clientHeight-20); // map 50..120 to canvas
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+    }
+  };
+  function resetVitals(){
+    $('#v-hr').textContent='—';
+    $('#v-spo2').textContent='—';
+    $('#v-temp').textContent='—';
+    $('#v-bp').textContent='—';
+    $('#v-rr').textContent='—';
+    state.streamSeries = [];
+    chart.draw();
+  }
+  function pushStream(){
+    const hr = 66 + Math.round(Math.random()*14);
+    const spo2 = 96 + Math.round(Math.random()*3);
+    const temp = (36.4 + Math.random()*0.6).toFixed(1);
+    const sys = 110 + Math.round(Math.random()*20);
+    const dia = 70 + Math.round(Math.random()*12);
+    const rr = 12 + Math.round(Math.random()*6);
+
+    $('#v-hr').textContent=hr;
+    $('#v-spo2').textContent=spo2;
+    $('#v-temp').textContent=temp;
+    $('#v-bp').textContent=`${sys}/${dia}`;
+    $('#v-rr').textContent=rr;
+
+    state.streamSeries.push(hr);
+    if(state.streamSeries.length>50) state.streamSeries.shift();
+    chart.draw();
+  }
+  $('#btn-start-stream').onclick=()=>{
+    if(state.streaming) return;
+    state.streaming=true;
+    state.streamTimer=setInterval(pushStream, 800);
+    toast('Streaming started');
+  };
+  $('#btn-stop-stream').onclick=()=>{ state.streaming=false; clearInterval(state.streamTimer); toast('Streaming stopped'); };
+
+  // Teleconsult
+  $('#btn-tele-start').onclick=()=>{ $('#vidBox').textContent='Live (simulated)'; toast('Teleconsult started'); };
+  $('#btn-tele-end').onclick=()=>{ $('#vidBox').textContent='Disconnected'; toast('Teleconsult ended'); };
+  $('#btn-share-screen').onclick=()=>toast('Screen shared (sim)');
+
+  // Clinical actions & Rx
+  $('#btn-order-labs').onclick=()=>toast('Lab order created (sim)');
+  $('#btn-order-imaging').onclick=()=>toast('Imaging order created (sim)');
+  $('#btn-careplan').onclick=()=>toast('Care plan saved (sim)');
+  $('#btn-add-note').onclick=()=>toast('Note added (sim)');
+  $('#btn-upload').onclick=()=>toast('Upload dialog (sim)');
+  $('#btn-generate-rx').onclick=()=>toast('Blank e-Rx generated (sim)');
+  $('#btn-save-rx').onclick=()=>toast('e-Rx saved (sim)');
+  $('#btn-send-app').onclick=()=>toast('Sent to patient app (sim)');
+
+  // ------------------------------
+  // Emergency: Blood Donor & Dialysis
+  // ------------------------------
+  function renderDonors(rows){
+    const tb = $('#tblDonors tbody'); tb.innerHTML='';
+    rows.forEach(d=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${d.name}</td><td>${d.group}</td><td>${d.city}</td><td>${d.phone}</td><td><button class="secondary">Call</button></td>`;
+      tb.appendChild(tr);
+    });
+  }
+  renderDonors(state.donors);
+  $('#btn-find-donor').onclick=()=>{
+    const g = $('#donorGroup').value; const c=$('#donorCity').value;
+    const rows = state.donors.filter(d=>(!g||d.group===g)&&(!c||d.city===c));
+    renderDonors(rows);
+    toast(`${rows.length} donors found`);
+  };
+  $('#btn-broadcast').onclick=()=>toast('Emergency alert broadcasted to nearby donors (sim)');
+
+  $('#btn-d-fingerprint').onclick=()=>{ toast('Fingerprint matched (sim)'); fillDialysisDemo('PAT551210'); };
+  $('#btn-d-face').onclick=()=>{ toast('Face recognized (sim)'); fillDialysisDemo('PAT551210'); };
+  $('#btn-d-fetch').onclick=()=>{
+    const pid = $('#d-abha').value.trim();
+    if(!pid){ toast('Enter ABHA / Patient ID'); return; }
+    fillDialysisDemo(pid);
+  };
+  function fillDialysisDemo(pid){
+    $('#d-last').textContent = '2025-08-10 · 4h session, UF 2.1L';
+    $('#d-comp').textContent = 'Intradialytic hypotension (once in last 3 sessions)';
+    $('#d-labs').textContent = 'Hb 10.8, K+ 4.8, Ca 9.1, PO4 5.2';
+    toast(`Dialysis history fetched for ${pid} (sim)`);
+  }
+
+  // ------------------------------
+  // Shortcuts & Init
+  // ------------------------------
+  document.addEventListener('keydown', e=>{
+    if(e.key==='F2') nav('s-appts');
+    if(e.key==='F3') nav('s-emergency');
+    if(e.key==='F4') nav('s-dashboard');
+  });
+
+  window.addEventListener('load', ()=>{ chart.draw(); });
 </script>
 </body>
 </html>
